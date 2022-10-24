@@ -1,5 +1,5 @@
 import { SELECTORS } from './viewContants.js';
-import { CREW_MANAGE_DETAIL, CREW_TAB, HEADER, MAIN } from './templates.js';
+import { CREW_MANAGE_DETAIL, CREW_MANAGE_LIST, CREW_TAB, HEADER, MAIN } from './templates.js';
 
 const getElement = selector => document.querySelector(`#${selector}`);
 const addClickEvent = (selector, callback) => {
@@ -15,14 +15,14 @@ const addClickEvent = (selector, callback) => {
 };
 
 export class View {
-	constructor() {
+	constructor(_matcher) {
 		this.initalize();
+		this.matcher = _matcher;
 	}
 
 	initalize() {
 		this.renderHeader();
 		this.renderMain();
-		this.setEvent();
 	}
 
 	renderHeader() {
@@ -37,18 +37,30 @@ export class View {
 		getElement(selector).innerHTML = '';
 	}
 
+	clearNodes(selector) {
+		document.querySelectorAll(`.${selector}`).forEach(node => {
+			node.remove();
+		});
+	}
+
 	renderCrewTab() {
 		this.clearNode(SELECTORS.MAIN);
 		getElement(SELECTORS.MAIN).insertAdjacentHTML('beforeend', CREW_TAB);
 	}
 
 	renderCrewTabDetail(currentCourse) {
-		getElement(SELECTORS.CREW_TAB_DETAIL)?.remove();
+		this.clearNodes(SELECTORS.CREW_TAB_DETAIL);
 		getElement(SELECTORS.MAIN).insertAdjacentHTML('beforeend', CREW_MANAGE_DETAIL(currentCourse));
+		this.renderCrewList(currentCourse);
 	}
 
-	setEvent() {
-		addClickEvent(SELECTORS.CREW_TAB, event => {
+	renderCrewList(currentCourse) {
+		getElement(SELECTORS.MAIN)
+		.insertAdjacentHTML('beforeend', CREW_MANAGE_LIST(this.matcher[currentCourse],currentCourse));
+	}
+
+	setCrewTabEvent(addCrewFn, deleteFn) {
+		addClickEvent(SELECTORS.CREW_TAB, () => {
 			this.renderCrewTab();
 		});
 		addClickEvent(SELECTORS.FRONTEND_COURSE_INPUT, event => {
@@ -56,6 +68,13 @@ export class View {
 		});
 		addClickEvent(SELECTORS.BACKEND_COURSE_INPUT, event => {
 			this.renderCrewTabDetail(event.target.value);
+		});
+		addClickEvent(SELECTORS.ADD_CREW_BUTTON, event => {
+			event.preventDefault();
+			addCrewFn(event.target.dataset.course, getElement(SELECTORS.CREW_NAME_INPUT).value);
+		});
+		addClickEvent(SELECTORS.DELETE_CREW_BUTTON, event => {
+			deleteFn(event.target.dataset.course, event.target.dataset.idx);
 		});
 	}
 }

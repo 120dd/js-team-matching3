@@ -29,7 +29,7 @@ const CREW_TAB = `
 `;
 
 const CREW_MANAGE_DETAIL = courseName => `
-<section id=${SELECTORS.CREW_TAB_DETAIL}>
+<section class=${SELECTORS.CREW_TAB_DETAIL}>
       <h3>${COURSE_NAME_KR[courseName]} 크루 관리</h3>
       <form>
         <label>크루 이름</label>
@@ -39,4 +39,30 @@ const CREW_MANAGE_DETAIL = courseName => `
     </section>
 `;
 
-export { HEADER, MAIN, CREW_TAB, CREW_MANAGE_DETAIL };
+const CREW_MANAGE_LIST = (crewList, course) => `
+<section class=${SELECTORS.CREW_TAB_DETAIL}>
+      <h3>${COURSE_NAME_KR[course]} 크루 목록</h3>
+      <table id="crew-table" border="1">
+        <thead>
+          <tr>
+            <th></th>
+            <th>크루</th>
+            <th>관리</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${crewList.map((name, idx) => `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${name}</td>
+            <td>
+              <button data-course=${course} data-idx=${idx} class="delete-crew-button">삭제</button>
+            </td>
+          </tr>
+          `,).join('')}
+        </tbody>
+      </table>
+    </section>
+`;
+
+export { HEADER, MAIN, CREW_TAB, CREW_MANAGE_DETAIL, CREW_MANAGE_LIST };
