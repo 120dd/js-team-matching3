@@ -6,6 +6,8 @@ export class App {
 		this.matcher = new Matcher();
 		this.view = new View(this.matcher);
 		this.view.setCrewTabEvent(this.requestAddCrew, this.requestDeleteCrew);
+		this.view.setTeamTabEvent();
+		this.view.setMatchTeamEvent(this.requestMatchTeam);
 	}
 
 	requestAddCrew = (course, crewName) => {
@@ -18,10 +20,14 @@ export class App {
 	};
 
 	requestDeleteCrew = (course, idx) => {
-		if (!this.view.conirm("정말 삭제하시겠습니까?")){
+		if (!this.view.confirm("정말 삭제하시겠습니까?")){
 			return;
 		}
 		this.matcher.deleteCrew(course, idx);
 		this.view.renderCrewTabDetail(course);
 	};
+	
+	requestMatchTeam(course,teamNumber){
+		console.log(course,teamNumber);
+	}
 }

@@ -1,5 +1,12 @@
 import { SELECTORS } from './viewContants.js';
-import { CREW_MANAGE_DETAIL, CREW_MANAGE_LIST, CREW_TAB, HEADER, MAIN } from './templates.js';
+import {
+	CREW_MANAGE_DETAIL,
+	CREW_MANAGE_LIST,
+	CREW_TAB,
+	HEADER,
+	MAIN, TEAM_NUMBER_INPUT_SECTION,
+	TEAM_TAB
+} from './templates.js';
 
 const getElement = selector => document.querySelector(`#${selector}`);
 const addClickEvent = (selector, callback) => {
@@ -54,18 +61,28 @@ export class View {
 		getElement(SELECTORS.MAIN).insertAdjacentHTML('beforeend', CREW_MANAGE_DETAIL(currentCourse));
 		this.renderCrewList(currentCourse);
 	}
-
+	
 	renderCrewList(currentCourse) {
 		getElement(SELECTORS.MAIN)
 		.insertAdjacentHTML('beforeend', CREW_MANAGE_LIST(this.matcher[currentCourse],currentCourse));
 	}
+	
+	renderTeamTab(){
+		this.clearNode(SELECTORS.MAIN);
+		getElement(SELECTORS.MAIN).insertAdjacentHTML('beforeend', TEAM_TAB);
+	}
 
+	renderTeamTabDetail(course,mission,crewList){
+		this.clearNodes(SELECTORS.CREW_TAB_DETAIL);
+		getElement(SELECTORS.MAIN).insertAdjacentHTML('beforeend', TEAM_NUMBER_INPUT_SECTION(course,mission,crewList));
+	}
+	
 	setHeaderEvent(){
 		addClickEvent(SELECTORS.CREW_TAB, () => {
 			this.renderCrewTab();
 		});
 		addClickEvent(SELECTORS.TEAM_TAB, () => {
-			console.log(1122);
+			this.renderTeamTab();
 		});
 	}
 	
@@ -85,11 +102,30 @@ export class View {
 		});
 	}
 	
+	setTeamTabEvent(){
+		addClickEvent(SELECTORS.SHOW_TEAM_MATCHER_BUTTON,(event)=>{
+			event.preventDefault();
+			const selectedCourse = getElement(SELECTORS.COURSE_SELECT)
+				.options[getElement(SELECTORS.COURSE_SELECT).selectedIndex].text;
+			const selectedMission = getElement(SELECTORS.MISSION_SELECT)
+				.options[getElement(SELECTORS.MISSION_SELECT).selectedIndex].text;
+			const crewList = this.matcher[getElement(SELECTORS.COURSE_SELECT).value];
+			this.renderTeamTabDetail(selectedCourse,selectedMission,crewList);
+		})
+	}
+	
+	setMatchTeamEvent(matchFn){
+		addClickEvent(SELECTORS.MATCH_TEAM_BUTTON,(event)=>{
+			event.preventDefault();
+			matchFn(getElement(SELECTORS.COURSE_SELECT).value,getElement(SELECTORS.TEAM_MEMBER_COUNT_INPUT).value);
+		})
+	}
+	
 	alert(msg){
 		alert(msg);
 	}
 	
-	conirm(msg){
+	confirm(msg){
 		return confirm(msg)
 	}
 }
