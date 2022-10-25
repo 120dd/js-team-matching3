@@ -16,11 +16,12 @@ const addClickEvent = (selector, callback) => {
 
 export class View {
 	constructor(_matcher) {
-		this.initalize();
+		this.initialize();
 		this.matcher = _matcher;
+		this.setHeaderEvent();
 	}
 
-	initalize() {
+	initialize() {
 		this.renderHeader();
 		this.renderMain();
 	}
@@ -59,10 +60,16 @@ export class View {
 		.insertAdjacentHTML('beforeend', CREW_MANAGE_LIST(this.matcher[currentCourse],currentCourse));
 	}
 
-	setCrewTabEvent(addCrewFn, deleteFn) {
+	setHeaderEvent(){
 		addClickEvent(SELECTORS.CREW_TAB, () => {
 			this.renderCrewTab();
 		});
+		addClickEvent(SELECTORS.TEAM_TAB, () => {
+			console.log(1122);
+		});
+	}
+	
+	setCrewTabEvent(addCrewFn, deleteFn) {
 		addClickEvent(SELECTORS.FRONTEND_COURSE_INPUT, event => {
 			this.renderCrewTabDetail(event.target.value);
 		});
@@ -76,5 +83,13 @@ export class View {
 		addClickEvent(SELECTORS.DELETE_CREW_BUTTON, event => {
 			deleteFn(event.target.dataset.course, event.target.dataset.idx);
 		});
+	}
+	
+	alert(msg){
+		alert(msg);
+	}
+	
+	conirm(msg){
+		return confirm(msg)
 	}
 }
